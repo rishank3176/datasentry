@@ -1,0 +1,43 @@
+StudentID,Name,Age,Attendance,Score,Email
+S001,Asha Rao,19,92,78,asha.rao@example.com
+S002,"Rao, Priya",20,88,81,priya.rao@example.com
+S003,Liam Chen,18,95,74,liam.chen@example.com
+S004,Noah Singh,21,90,70,noah.singh@example.com
+S005,Mia Kapoor,22,85,66,mia.kapoor@example.com
+S006,Ethan Das,20,91,80,ethan.das@example.com
+S007,Ava Iyer,19,87,77,ava.iyer@example.com
+S008,Sofia Khan,21,84,83,sofia.khan@example.com
+S009,Arjun Mehta,22,76,79,arjun.mehta@example.com
+S010,Diya Nair,20,89,73,diya.nair@example.com
+S011,Kabir Shah,23,93,86,kabir.shah@example.com
+S012,Anika Bose,19,97,90,anika.bose@example.com
+S013,Vivaan Joshi,21,82,64,vivaan.joshi@example.com
+S014,Sara Ali,20,94,71,sara.ali@example.com
+S015,Ishaan Roy,18,86,69,ishaan.roy@example.com
+S016,Zara Qureshi,24,98,88,zara.qureshi@example.com
+S017,Neil Dsouza,19,75,72,neil.dsouza@example.com
+S018,Meera Iyer,22,91,85,meera.iyer@example.com
+S019,Aditya Sen,20,89,76,aditya.sen@example.com
+S020,Pooja Nair,21,96,91,pooja.nair@example.com
+S021,Rahul Menon,23,88,67,rahul.menon@example.com
+S022,Kiara Paul,18,92,80,kiara.paul@example.com
+S023,"He said ""hello""",21,90,75,quote.demo@example.com
+S024,Whitespace Score,19,91,  88  ,space.score@example.com
+S025,Boundary Age,120,80,70,boundary.age@example.com
+S026,Boundary Attend,20,100,70,boundary.att@example.com
+S027,Boundary Score,20,80,100,boundary.score@example.com
+S028,Zero Attend,19,0,60,zero.att@example.com
+S029,Young Boundary,0,77,65,young.boundary@example.com
+S030,Missing Age,,90,70,missing.age@example.com
+S031,Bad Age,unknown,85,66,bad.age@example.com
+S032,Old Age,150,91,80,old.age@example.com
+S033,Negative Age,-2,87,77,neg.age@example.com
+S034,High Attendance,21,142,83,high.att@example.com
+S035,Bad Attendance,22,high,79,bad.att@example.com
+S036,Missing Score,20,76,,missing.score@example.com
+S037,Bad Score,23,89,excellent,bad.score@example.com
+S038,High Score,19,81,105,high.score@example.com
+S039,Missing Email,21,84,73,
+S040,Two Missing,20,, ,two.missing@example.com
+S041,OnlyTwoFields
+S042,Too,Many,Fields,Here,And,More,Extra

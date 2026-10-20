@@ -1,0 +1,5 @@
+datasentry
+datasentry_tests
+*.o
+*.dSYM
+.DS_Store
