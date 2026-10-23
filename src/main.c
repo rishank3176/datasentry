@@ -119,7 +119,11 @@ int main(int argc, char **argv)
     report.benchmark = options.benchmark ? &benchmark : NULL;
     report.warnings = warnings;
     report.warning_count = warning_count;
-    report_print(stdout, &report);
+    if (options.json) {
+        report_print_json(stdout, &report);
+    } else {
+        report_print(stdout, &report);
+    }
 
     analysis_free(&analysis);
     schema_free(&schema);

@@ -186,6 +186,10 @@ int options_parse(int argc, char **argv, Options *options, char *err, size_t err
             options->benchmark = 1;
             continue;
         }
+        if (strcmp(argument, "--json") == 0) {
+            options->json = 1;
+            continue;
+        }
         if (strcmp(argument, "--threads") == 0) {
             int threads;
             int status;
@@ -258,6 +262,7 @@ void options_print_help(FILE *out)
             "                  Default: %d. Maximum: %d. Values outside 1..%d are rejected.\n"
             "  --benchmark     Run the same analysis serially and with worker threads,\n"
             "                  then report both times and whether the results match.\n"
+            "  --json          Print the report as one JSON object on stdout.\n"
             "  --range SPEC    Inclusive numeric limits. SPEC is Column:min:max.\n"
             "                  Repeat the option for more than one column. Quote SPEC\n"
             "                  when the column name contains spaces, for example\n"

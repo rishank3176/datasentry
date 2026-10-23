@@ -244,6 +244,23 @@ On that one run, serial analysis took 13.926 ms and 4 workers took 4.110 ms, a s
 
 `tests/test_core.c` is a plain C driver. It covers quoted commas, escaped quotes, CRLF, missing cells, incomplete records, malformed rows, the 70% boundary, invalid numbers, minimum, maximum and mean, inclusive ranges, serial and parallel agreement, one worker, more requested threads than rows, bad command-line options, and file-open failures. Temporary CSVs are created with `mkstemp` and removed. A few checks also execute `./datasentry`.
 
+## Website
+
+The browser interface is a React app. It does not reimplement the analysis. The Node server saves an upload, runs `./datasentry --json`, and returns that report.
+
+```sh
+make
+cd backend && npm install && npm start
+```
+
+In a second terminal:
+
+```sh
+cd frontend && npm install && npm run dev
+```
+
+Open http://127.0.0.1:5173. The page can analyze an uploaded CSV or the included sample. `npm start` in `backend` listens on http://127.0.0.1:8787. After `npm run build` in `frontend`, the API server also serves the built site.
+
 ## Layout
 
 ```text

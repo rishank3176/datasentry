@@ -241,3 +241,196 @@ void report_print(FILE *out, const Report *report)
         }
     }
 }
+
+static void json_string(FILE *out, const char *text)
+{
+    const unsigned char *cursor;
+
+    fputc('"', out);
+    if (!text) {
+        fputc('"', out);
+        return;
+    }
+    for (cursor = (const unsigned char *)text; *cursor; cursor++) {
+        switch (*cursor) {
+        case '"':
+            fputs("\\\"", out);
+            break;
+        case '\\':
+            fputs("\\\\", out);
+            break;
+        case '\b':
+            fputs("\\b", out);
+            break;
+        case '\f':
+            fputs("\\f", out);
+            break;
+        case '\n':
+            fputs("\\n", out);
+            break;
+        case '\r':
+            fputs("\\r", out);
+            break;
+        case '\t':
+            fputs("\\t", out);
+            break;
+        default:
+            if (*cursor < 0x20) {
+                fprintf(out, "\\u%04x", *cursor);
+            } else {
+                fputc(*cursor, out);
+            }
+            break;
+        }
+    }
+    fputc('"', out);
+}
+
+static void json_double(FILE *out, double value)
+{
+    char buffer[64];
+    snprintf(buffer, sizeof buffer, "%.10g", value);
+    fputs(buffer, out);
+}
+
+void report_print_json(FILE *out, const Report *report)
+{
+    size_t column;
+    size_t warning;
+    int any_rule = 0;
+
+    if (!out || !report || !report->dataset || !report->schema || !report->analysis) {
+        return;
+    }
+
+    fputs("{\n", out);
+    fputs("  \"file\": ", out);
+    json_string(out, report->path ? report->path : "");
+    fputs(",\n  \"dataset\": {\n", out);
+    fprintf(out, "    \"columnCount\": %zu,\n", report->dataset->column_count);
+    fputs("    \"columnNames\": [", out);
+    for (column = 0; column < report->dataset->column_count; column++) {
+        if (column > 0) {
+            fputs(", ", out);
+        }
+        json_string(out, report->dataset->headers[column]);
+    }
+    fprintf(out, "],\n    \"dataRecords\": %zu,\n", report->dataset->total_records);
+    fprintf(out, "    \"validRecords\": %zu,\n", report->dataset->row_count);
+    fprintf(out, "    \"malformedRecords\": %zu\n", report->dataset->malformed_count);
+    fputs("  },\n  \"execution\": {\n", out);
+    if (report->parallel) {
+        fprintf(out, "    \"requestedThreads\": %d,\n", report->parallel->requested_threads);
+        fprintf(out, "    \"effectiveWorkers\": %d,\n", report->parallel->effective_workers);
+        fputs("    \"mode\": ", out);
+        json_string(out, report->parallel->mode);
+        fputs(",\n", out);
+    }
+    fprintf(out, "    \"benchmark\": %s\n", report->benchmark ? "true" : "false");
+    fputs("  },\n  \"ranges\": [", out);
+    for (column = 0; column < report->schema->column_count; column++) {
+        const RangeRule *rule = &report->schema->rules[column];
+        if (!rule->active) {
+            continue;
+        }
+        if (any_rule) {
+            fputs(", ", out);
+        }
+        any_rule = 1;
+        fputs("{\"column\": ", out);
+        json_string(out, report->dataset->headers[column]);
+        fputs(", \"min\": ", out);
+        json_double(out, rule->min_value);
+        fputs(", \"max\": ", out);
+        json_double(out, rule->max_value);
+        fputc('}', out);
+    }
+    fputs("],\n  \"quality\": {\n", out);
+    fprintf(out, "    \"validRecords\": %zu,\n", report->analysis->records);
+    fprintf(out, "    \"malformedRecords\": %zu,\n", report->dataset->malformed_count);
+    fprintf(out, "    \"incompleteRecords\": %zu,\n", report->analysis->incomplete_records);
+    fprintf(out, "    \"missingCells\": %zu\n", report->analysis->missing_cells);
+    fputs("  },\n  \"columns\": [\n", out);
+
+    for (column = 0; column < report->dataset->column_count; column++) {
+        const ColumnInfo *info = &report->schema->columns[column];
+        const ColumnStats *stats = &report->analysis->columns[column];
+        const RangeRule *rule = &report->schema->rules[column];
+
+        fputs("    {\"name\": ", out);
+        json_string(out, report->dataset->headers[column]);
+        fprintf(out, ", \"type\": \"%s\"", info->kind == COL_NUMERIC ? "numeric" : "text");
+        fputs(", \"numericShare\": ", out);
+        if (info->non_missing == 0) {
+            fputs("null", out);
+        } else {
+            json_double(out, 100.0 * (double)info->numeric_parsed / (double)info->non_missing);
+        }
+        fprintf(out, ", \"missing\": %zu, \"missingPercent\": ", stats->missing);
+        if (report->analysis->records == 0) {
+            fputs("null", out);
+        } else {
+            json_double(out, 100.0 * (double)stats->missing / (double)report->analysis->records);
+        }
+        if (info->kind == COL_NUMERIC) {
+            fprintf(out, ", \"valid\": %zu, \"invalid\": %zu", stats->valid_numeric, stats->invalid);
+            if (stats->valid_numeric == 0) {
+                fputs(", \"min\": null, \"max\": null, \"mean\": null", out);
+            } else {
+                fputs(", \"min\": ", out);
+                json_double(out, stats->min_value);
+                fputs(", \"max\": ", out);
+                json_double(out, stats->max_value);
+                fputs(", \"mean\": ", out);
+                json_double(out, column_mean(stats));
+            }
+            if (rule->active) {
+                fprintf(out, ", \"outOfRange\": %zu", stats->out_of_range);
+            } else {
+                fputs(", \"outOfRange\": null", out);
+            }
+        } else {
+            fputs(", \"valid\": null, \"invalid\": null, \"min\": null, \"max\": null, \"mean\": null, \"outOfRange\": null", out);
+        }
+        fprintf(out, "}%s\n", column + 1 == report->dataset->column_count ? "" : ",");
+    }
+
+    fputs("  ],\n  \"benchmark\": ", out);
+    if (!report->benchmark) {
+        fputs("null", out);
+    } else {
+        const char *comparison = "similar";
+        if (!report->benchmark->speedup_valid) {
+            comparison = "too-small";
+        } else if (report->benchmark->comparison > 0) {
+            comparison = "faster";
+        } else if (report->benchmark->comparison < 0) {
+            comparison = "slower";
+        }
+        fputs("{\n", out);
+        fputs("    \"serialMs\": ", out);
+        json_double(out, report->benchmark->serial_ms);
+        fputs(",\n    \"parallelMs\": ", out);
+        json_double(out, report->benchmark->parallel_ms);
+        fputs(",\n    \"speedup\": ", out);
+        if (report->benchmark->speedup_valid) {
+            json_double(out, report->benchmark->speedup);
+        } else {
+            fputs("null", out);
+        }
+        fprintf(out, ",\n    \"comparison\": \"%s\",\n", comparison);
+        fprintf(out, "    \"equivalent\": %s,\n", report->benchmark->equivalent ? "true" : "false");
+        fputs("    \"detail\": ", out);
+        json_string(out, report->benchmark->detail);
+        fputs("\n  }", out);
+    }
+
+    fputs(",\n  \"warnings\": [", out);
+    for (warning = 0; warning < report->warning_count; warning++) {
+        if (warning > 0) {
+            fputs(", ", out);
+        }
+        json_string(out, report->warnings[warning]);
+    }
+    fputs("]\n}\n", out);
+}

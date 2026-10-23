@@ -18,5 +18,6 @@ typedef struct Report {
 } Report;
 
 void report_print(FILE *out, const Report *report);
+void report_print_json(FILE *out, const Report *report);
 
 #endif

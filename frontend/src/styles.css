@@ -1,0 +1,243 @@
+:root {
+  --paper: #f3efe4;
+  --ink: #1d1a16;
+  --muted: #645d53;
+  --line: #ddd4c4;
+  --card: #fffaf2;
+  --green: #0f6b4c;
+  --green-deep: #0b4d37;
+  --amber: #a15c12;
+  --warn: #8d2f1b;
+  --shadow: 0 18px 50px rgba(55, 38, 16, 0.08);
+  font-family: "Outfit", "Avenir Next", "Segoe UI", sans-serif;
+  color: var(--ink);
+  background:
+    radial-gradient(circle at top left, rgba(15, 107, 76, 0.08), transparent 32rem),
+    var(--paper);
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+}
+
+button, input { font: inherit; }
+
+code {
+  font-family: "SFMono-Regular", ui-monospace, monospace;
+  font-size: 0.92em;
+}
+
+.page {
+  width: min(1180px, calc(100% - 32px));
+  margin: 0 auto;
+  padding-bottom: 48px;
+}
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+  padding: 28px 0 18px;
+}
+
+.brand, .brand div { display: flex; align-items: center; gap: 12px; }
+.brand div { display: block; }
+.brand strong { font-family: "Fraunces", Georgia, serif; font-size: 1.35rem; }
+
+.mark {
+  width: 16px;
+  height: 42px;
+  border-radius: 99px;
+  background: linear-gradient(var(--green), #d7a15a);
+}
+
+.eyebrow {
+  margin: 0 0 4px;
+  color: var(--green-deep);
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+nav { display: flex; gap: 8px; }
+
+nav button, .text-button, .secondary, .primary, .icon-button {
+  border: 0;
+  cursor: pointer;
+}
+
+nav button {
+  background: transparent;
+  color: var(--muted);
+  padding: 8px 12px;
+  border-radius: 999px;
+}
+
+nav button.active {
+  background: var(--ink);
+  color: white;
+}
+
+.workspace {
+  display: grid;
+  grid-template-columns: 340px 1fr;
+  gap: 18px;
+  align-items: start;
+}
+
+.panel {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: var(--shadow);
+}
+
+.controls { padding: 22px; }
+.panel-head h1, .empty h2, .method h1, .report-title h2 {
+  font-family: "Fraunces", Georgia, serif;
+  font-weight: 560;
+  letter-spacing: -0.03em;
+  margin: 0;
+}
+
+.panel-head p, .empty p, .method p, .hint, .verdict { color: var(--muted); line-height: 1.5; }
+
+.drop {
+  display: grid;
+  gap: 4px;
+  margin: 18px 0;
+  padding: 16px;
+  border: 1.5px dashed #c8bba6;
+  border-radius: 16px;
+  background: #faf6ee;
+  cursor: pointer;
+}
+
+.drop input { display: none; }
+.drop span { font-weight: 650; }
+.drop small { color: var(--muted); }
+
+.field, .check { display: grid; gap: 8px; margin-bottom: 14px; }
+.field span, .range-head h2, .split h3 { font-size: 0.95rem; }
+
+input[type="number"], .range-row input {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: white;
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.check { grid-template-columns: auto 1fr; align-items: start; }
+
+.range-head, .actions, .report-title, .bar-label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
+
+.range-head h2 { margin: 0; }
+.text-button { background: none; color: var(--green-deep); padding: 0; }
+
+.range-row {
+  display: grid;
+  grid-template-columns: 1.3fr 0.7fr 0.7fr auto;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.icon-button {
+  width: 36px;
+  border-radius: 12px;
+  background: #f1e7d8;
+  color: var(--ink);
+}
+
+.actions { margin-top: 16px; }
+
+.primary, .secondary {
+  border-radius: 999px;
+  padding: 11px 16px;
+}
+
+.primary { background: var(--green); color: white; }
+.primary:disabled, .secondary:disabled { opacity: 0.6; cursor: wait; }
+.secondary { background: #efe6d6; color: var(--ink); }
+
+.error {
+  background: #fde8e2;
+  color: var(--warn);
+  border-radius: 12px;
+  padding: 10px 12px;
+}
+
+.results { min-height: 640px; padding: 22px; }
+.empty { max-width: 46rem; padding: 28px 8px; }
+.empty h2 { font-size: 2.4rem; line-height: 1.05; margin-bottom: 12px; }
+
+.report-title { align-items: flex-start; margin-bottom: 16px; }
+.report-title h2 { font-size: 1.8rem; }
+
+.pill {
+  border-radius: 999px;
+  padding: 6px 10px;
+  font-size: 0.82rem;
+}
+.pill.ok { background: #e5f4ec; color: var(--green-deep); }
+.pill.warn { background: #fde8e2; color: var(--warn); }
+
+.stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+
+.stat {
+  background: #f7f1e6;
+  border-radius: 14px;
+  padding: 12px;
+}
+.stat span { display: block; color: var(--muted); font-size: 0.78rem; }
+.stat strong { font-size: 1.35rem; }
+
+.meta { display: flex; gap: 14px; color: var(--muted); margin: 14px 0; font-size: 0.92rem; }
+
+.warnings {
+  margin: 0 0 14px;
+  padding-left: 18px;
+  color: var(--amber);
+}
+
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 0.92rem; }
+th { text-align: left; color: var(--muted); font-weight: 520; }
+th, td { padding: 9px 8px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+td small { color: var(--muted); margin-left: 4px; }
+
+.split { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-top: 18px; }
+.split h3 { margin-top: 0; }
+.range-list { list-style: none; padding: 0; margin: 0; }
+.range-list li { display: grid; grid-template-columns: 1fr auto auto; gap: 10px; padding: 8px 0; border-bottom: 1px solid var(--line); }
+.range-list em { font-style: normal; color: var(--amber); }
+
+.bar-row { margin-bottom: 10px; }
+.track { height: 10px; background: #efe6d6; border-radius: 99px; overflow: hidden; }
+.fill { height: 100%; background: var(--green); border-radius: inherit; }
+
+.method { padding-top: 12px; }
+.method h1 { font-size: clamp(2.2rem, 5vw, 4.4rem); line-height: 0.98; max-width: 16ch; }
+.method section { max-width: 44rem; }
+.cards { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-top: 22px; }
+.cards article { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 18px 18px 8px; }
+.cards h2 { font-family: "Fraunces", Georgia, serif; font-size: 1.4rem; margin-bottom: 8px; }
+
+@media (max-width: 900px) {
+  .workspace, .split, .cards, .stats { grid-template-columns: 1fr; }
+  .topbar { align-items: flex-start; flex-direction: column; }
+  .stats { grid-template-columns: 1fr 1fr; }
+}

@@ -3,3 +3,5 @@ datasentry_tests
 *.o
 *.dSYM
 .DS_Store
+node_modules
+frontend/dist

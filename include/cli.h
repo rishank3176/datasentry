@@ -16,6 +16,7 @@ typedef struct Options {
     char *dataset_path;
     int threads;
     int benchmark;
+    int json;
     int help;
     RangeSpec *ranges;
     size_t range_count;
